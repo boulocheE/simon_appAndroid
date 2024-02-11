@@ -1,6 +1,7 @@
 package com.example.simon;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
@@ -12,6 +13,14 @@ import android.view.View;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Properties;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 
@@ -53,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
                                          ContextCompat.getColor(this, R.color.jaune ),
                                          ContextCompat.getColor(this, R.color.rouge )};
 
+        this.debutPartieJoueur = false;
+        this.finPartie         = true;
+
+        this.temps      = 300;
+        this.coeffTemps = 1;
+
+        this.niveauActuel = 1;
+
 
         setContentView(R.layout.activity_main);
 
@@ -71,8 +88,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        this.debutPartieJoueur = false;
-        this.finPartie         = true;
+        if ( !this.fichierPropertiesExiste() )
+            this.sauvegarderProprietes();
+        else
+            this.bestScore = this.chargerProprietes();
 
 
         TextView textView;
@@ -87,12 +106,42 @@ public class MainActivity extends AppCompatActivity {
         Button buttonNiveau2 = (Button) findViewById(R.id.buttonNiveau2);
         buttonNiveau2.setBackground(null);
         buttonNiveau2.setBackgroundResource( R.drawable.button_niveau_non_select );
+    }
 
 
-        this.temps      = 500;
-        this.coeffTemps = 1;
+    private void sauvegarderProprietes() {
+        Properties properties = new Properties();
 
-        this.niveauActuel = 1;
+        // Ajouter des propriétés
+        properties.setProperty("bestScore", this.bestScore + "");
+
+        // Écrire dans le fichier
+        try (OutputStream output = new FileOutputStream(getFilesDir() + "/config.properties")) {
+            properties.store(output, "Configuration");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int chargerProprietes() {
+        Properties properties = new Properties();
+
+        // Charger à partir du fichier
+        try (InputStream input = new FileInputStream(getFilesDir() + "/config.properties")) {
+            properties.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Accéder aux propriétés
+        String bestScore = properties.getProperty("bestScore");
+
+        return Integer.parseInt(bestScore);
+    }
+
+    private boolean fichierPropertiesExiste() {
+        File file = new File(getFilesDir(), "config.properties");
+        return file.exists();
     }
 
 
@@ -131,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void niveau1 ()
     {
-        this.temps      = 500;
+        this.temps      = 300;
         this.coeffTemps = 1;
 
         Button buttonNiveau1 = (Button) findViewById(R.id.buttonNiveau1);
@@ -177,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         this.casesAViolet();
 
 
-        // Start with the first index
+        // Commencer avec le premier index
         displayColorRecursive(handler, 0, delayBetweenColors);
 
         this.lstCasesUser.clear();
@@ -204,10 +253,10 @@ public class MainActivity extends AppCompatActivity {
                     if ( (int)( temps * coeffTemps ) > 100 ) temps = (int)( temps * coeffTemps );
                     // Retour à la couleur par défaut ou toute autre couleur souhaitée
                     textView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.violet));
-                    // Continue with the next color after a delay
+                    // Continuer avec la couleur suivante après le délai
                     displayColorRecursive(handler, index + 1, temps   );
                 }
-            }, delayBetweenColors * 2 + 100); // Introduce a small additional delay for resetting
+            }, delayBetweenColors * 2 + 100); // Ajouter un petit délai pour le reset
         }
 
         else
@@ -219,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
                     debutPartieJoueur = true;
                 }
-            }, delayBetweenColors * 3 + 100); // Introduce a small additional delay for resetting
+            }, delayBetweenColors * 3 + 100); // Ajouter un petit délai pour le reset
         }
     }
 
@@ -264,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    // Helper method to get TextView by its ID
     private TextView getTextViewById(int id)
     {
         String idView = "textView" + id;
@@ -294,6 +342,8 @@ public class MainActivity extends AppCompatActivity {
 
             if ( this.score > this.bestScore ) this.bestScore = this.score;
             this.score = 0;
+
+            this.sauvegarderProprietes();
 
             this.lstCasesGenerees.clear();
 
