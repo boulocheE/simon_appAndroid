@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Simon</string>
+
+    <string name="score">Score :</string>
+    <string name="bestScore">Meilleur score :</string>
+
+    <string name="go">C\'est parti !</string>
+</resources>
