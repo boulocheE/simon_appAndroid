@@ -5,4 +5,7 @@
     <string name="bestScore">Meilleur score :</string>
 
     <string name="go">C\'est parti !</string>
+
+    <string name="niveau1">Niveau 1</string>
+    <string name="niveau2">Niveau 2</string>
 </resources>

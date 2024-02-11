@@ -6,7 +6,16 @@
     <color name="violet">#FF3B2077</color>
 
     <color name="bleu" >#FF2980B9</color>
+    <color name="bleuOp" >#662980B9</color>
+
     <color name="vert" >#FF186A3B</color>
+    <color name="vertOp" >#66186A3B</color>
+
     <color name="jaune">#FFF1C40F</color>
+    <color name="jauneOp">#66F1C40F</color>
+
     <color name="rouge">#FFFF0000</color>
+    <color name="rougeOp">#66FF0000</color>
+
+    <color name="grisOp">#667B7D7D</color>
 </resources>

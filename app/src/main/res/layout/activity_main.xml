@@ -120,12 +120,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
 
         android:background="@drawable/button"
 
         android:onClick="debutJeu"
 
         android:text="@string/go"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonNiveau1"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+
+            android:background="@drawable/button"
+
+            android:onClick="clickNiveau1"
+
+            android:text="@string/niveau1"/>
+
+        <Button
+            android:id="@+id/buttonNiveau2"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+
+            android:background="@drawable/button"
+
+            android:onClick="clickNiveau2"
+
+            android:text="@string/niveau2"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>
