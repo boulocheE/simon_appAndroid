@@ -25,7 +25,8 @@ import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
-    private int bestScore;
+    private int bestScoreLvl1;
+    private int bestScoreLvl2;
     private int score;
 
     private int nbCase;
@@ -50,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
 
-        this.bestScore = 0;
-        this.score     = 0;
+        this.bestScoreLvl1 = 0;
+        this.bestScoreLvl2 = 0;
+        this.score         = 0;
 
         this.nbCase    = 0;
         this.lstCasesGenerees = new ArrayList<Integer>();
@@ -91,13 +93,16 @@ public class MainActivity extends AppCompatActivity {
         if ( !this.fichierPropertiesExiste() )
             this.sauvegarderProprietes();
         else
-            this.bestScore = this.chargerProprietes();
+        {
+            this.bestScoreLvl1 = this.chargerProprietes()[0];
+            this.bestScoreLvl2 = this.chargerProprietes()[1];
+        }
 
 
         TextView textView;
 
         textView = (TextView) findViewById(R.id.textViewBestScore);
-        textView.setText("Best score : " + this.bestScore);
+        textView.setText("Best score : " + this.bestScoreLvl1);
 
         textView = (TextView) findViewById(R.id.textViewScore);
         textView.setText("Score : " + this.score);
@@ -113,7 +118,8 @@ public class MainActivity extends AppCompatActivity {
         Properties properties = new Properties();
 
         // Ajouter des propriétés
-        properties.setProperty("bestScore", this.bestScore + "");
+        properties.setProperty("bestScore1", this.bestScoreLvl1 + "");
+        properties.setProperty("bestScore2", this.bestScoreLvl2 + "");
 
         // Écrire dans le fichier
         try (OutputStream output = new FileOutputStream(getFilesDir() + "/config.properties")) {
@@ -123,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int chargerProprietes() {
+    private Integer[] chargerProprietes() {
         Properties properties = new Properties();
 
         // Charger à partir du fichier
@@ -134,9 +140,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Accéder aux propriétés
-        String bestScore = properties.getProperty("bestScore");
+        String bestScore1 = properties.getProperty("bestScore1");
+        String bestScore2 = properties.getProperty("bestScore2");
 
-        return Integer.parseInt(bestScore);
+        return new Integer[] { Integer.parseInt(bestScore1), Integer.parseInt(bestScore2) };
     }
 
     private boolean fichierPropertiesExiste() {
@@ -183,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
         this.temps      = 300;
         this.coeffTemps = 1;
 
+        TextView textView = (TextView) findViewById(R.id.textViewBestScore);
+        textView.setText("Best score : " + this.bestScoreLvl1);
+
         Button buttonNiveau1 = (Button) findViewById(R.id.buttonNiveau1);
         buttonNiveau1.setBackground(null);
         buttonNiveau1.setBackgroundResource( R.drawable.button );
@@ -197,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
     {
         this.temps      = 500;
         this.coeffTemps = 0.95;
+
+        TextView textView = (TextView) findViewById(R.id.textViewBestScore);
+        textView.setText("Best score : " + this.bestScoreLvl2);
 
         Button buttonNiveau1 = (Button) findViewById(R.id.buttonNiveau1);
         buttonNiveau1.setBackground(null);
@@ -340,7 +353,9 @@ public class MainActivity extends AppCompatActivity {
             this.finPartie = true;
             this.nbCase    = 0;
 
-            if ( this.score > this.bestScore ) this.bestScore = this.score;
+            if ( niveauActuel == 1 && this.score > this.bestScoreLvl1 ) this.bestScoreLvl1 = this.score;
+            if ( niveauActuel == 2 && this.score > this.bestScoreLvl2 ) this.bestScoreLvl2 = this.score;
+
             this.score = 0;
 
             this.sauvegarderProprietes();
@@ -348,10 +363,11 @@ public class MainActivity extends AppCompatActivity {
             this.lstCasesGenerees.clear();
 
 
-            TextView textView;
+            int bestScore = this.niveauActuel == 1 ? this.bestScoreLvl1 : this.bestScoreLvl2;
 
+            TextView textView;
             textView = (TextView) findViewById(R.id.textViewBestScore);
-            textView.setText( "Best score : " + this.bestScore );
+            textView.setText( "Best score : " + bestScore );
 
             textView = (TextView) findViewById(R.id.textViewScore);
             textView.setText( "Score : " + this.score );
